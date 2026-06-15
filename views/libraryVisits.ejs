@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Visits</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Library</h2>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/books">Books</a>
+        <a href="/borrowed-books">Borrowed Books</a>
+        <a href="/students">Students</a>
+        <a href="/library-visits">Library Visits</a>
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="main-page">
+        <h1>Library Visits</h1>
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+            <form action="/library-visits/add" method="POST" style="display:flex; gap:8px; align-items:center;">
+                <input type="text" name="usn" placeholder="Enter USN to check-in/out" required style="padding:8px 12px; border-radius:6px; border:1px solid #ddd;">
+                <button type="submit" style="padding:8px 12px; background:linear-gradient(135deg,#02af36 0%,#028c2b 100%); color:white; border:none; border-radius:6px;">Check-In/Out</button>
+            </form>
+            <a href="/library-visits/add" style="text-decoration:none; padding:8px 12px; border-radius:6px; background:#f3f4f6; color:#333;">Open Entry Page</a>
+        </div>
+        <table>
+            <tr>
+                <th>Visit ID</th>
+                <th>USN</th>
+                <th>Student Name</th>
+                <th>IN Time</th>
+                <th>OUT Time</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            <% visits.forEach(visit=>{ %>
+                <tr>
+                    <td><%= visit.id %></td>
+                    <td><%= visit.usn %></td>
+                    <td><%= visit.name %></td>
+                    <td><%= new Date(visit.entry_time).toLocaleString() %></td>
+                    <td><% if(visit.exit_time){ %>
+                            <%= new Date(visit.exit_time).toLocaleString() %>
+                        <% } else { %>
+                            --
+                        <% } %>
+                    </td>
+                    <td><%= visit.duration || "--" %></td>
+                    <td><% if(visit.exit_time){ %>
+                            OUT
+                        <% } else { %>
+                            INSIDE
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if(!visit.exit_time){ %>
+                            <a href="/library-visits/checkout/<%= visit.id %>" class="edit" onclick="return confirm('Check out this student?')">Check-Out</a>
+                        <% } else { %>
+                            <a href="/library-visits/checkin/<%= visit.usn %>" class="edit" onclick="return confirm('Check in this student again?')">Check-In</a>
+                        <% } %>
+                        <a href="/library-visits/delete/<%= visit.id %>" class="delete" onclick="return confirm('Are you sure?')">Remove</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </table>
+    </div>
+</body>
+</html>
